@@ -1,6 +1,18 @@
 .DS_Store
+
+# C/C++ build artifacts
 *.o
 *.out
+
+# Local binaries
+01-processes/hello
+02-pid-namespaces/pidns
+03-user-namespaces/userns
+04-mount-namespaces/mountns
+
+# Python
 __pycache__/
-.env
 .venv/
+
+# Environment / secrets
+.env
