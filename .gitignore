@@ -16,3 +16,7 @@ __pycache__/
 
 # Environment / secrets
 .env
+
+# Seccomp experiment binaries
+08-seccomp/seccomp_demo
+08-seccomp/seccomp_supervisor
