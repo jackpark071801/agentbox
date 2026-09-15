@@ -20,3 +20,6 @@ __pycache__/
 # Seccomp experiment binaries
 08-seccomp/seccomp_demo
 08-seccomp/seccomp_supervisor
+
+# Landlock experiment binary
+09-landlock/landlock_demo
