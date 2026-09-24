@@ -23,3 +23,8 @@ __pycache__/
 
 # Landlock experiment binary
 09-landlock/landlock_demo
+
+# Application proxy TLS lab artifacts
+11-application-proxy/certs/*.key
+11-application-proxy/certs/*.csr
+11-application-proxy/certs/*.srl
