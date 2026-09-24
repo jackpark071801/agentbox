@@ -1,0 +1,4 @@
+subjectAltName=DNS:example.com
+basicConstraints=CA:FALSE
+keyUsage=digitalSignature,keyEncipherment
+extendedKeyUsage=serverAuth

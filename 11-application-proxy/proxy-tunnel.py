@@ -1,12 +1,8 @@
 import socket
-import ssl
 from urllib.parse import urlsplit
 
 LISTEN_HOST = "0.0.0.0"
 LISTEN_PORT = 8080
-
-CERT_FILE = "certs/example.com.crt"
-KEY_FILE = "certs/example.com.key"
 
 ALLOWED_HOSTS = {
     "example.com",
@@ -171,17 +167,6 @@ def relay(client, upstream):
             else:
                 client.sendall(data)
 
-def check_http_policy(method, path, host):
-    if host != "example.com":
-        return False, "host not allowed"
-
-    if method != "GET":
-        return False, "method not allowed"
-
-    if path == "/admin":
-        return False, "path not allowed"
-
-    return True, "allowed"
 
 def handle_connect(client, host):
     # CONNECT gives us "example.com:443"
@@ -213,72 +198,7 @@ def handle_connect(client, host):
 
         print("CONNECT tunnel established")
 
-        # TLS connection with the client.
-        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-        context.load_cert_chain(
-            certfile=CERT_FILE,
-            keyfile=KEY_FILE,
-        )
-
-        tls_client = context.wrap_socket(
-            client,
-            server_side=True,
-        )
-
-        print("CLIENT TLS ESTABLISHED")
-
-        # TLS connection with the real server.
-        upstream_context = ssl.create_default_context()
-
-        tls_upstream = upstream_context.wrap_socket(
-            upstream,
-            server_hostname=hostname,
-        )
-
-        print("UPSTREAM TLS ESTABLISHED")
-
-        # Read the decrypted HTTP request from the client.
-        request = recv_until_headers_complete(tls_client)
-
-        print("----- DECRYPTED HTTPS REQUEST -----")
-        print(request.decode("utf-8", errors="replace"))
-        print("------------------------------------")
-
-        # Parse the decrypted HTTP request.
-        method, target, version, headers, http_host = parse_request(request)
-
-        parsed = urlsplit(target)
-        path = parsed.path or "/"
-
-        allowed, reason = check_http_policy(
-            method,
-            path,
-            http_host.split(":", 1)[0],
-        )
-
-        if not allowed:
-            print(f"BLOCKED HTTP REQUEST: {method} {path}")
-            print(f"Reason: {reason}")
-
-            tls_client.sendall(
-                b"HTTP/1.1 403 Forbidden\r\n"
-                b"Content-Length: 0\r\n"
-                b"Connection: close\r\n"
-                b"\r\n"
-            )
-            return
-
-        print(f"ALLOWED HTTP REQUEST: {method} {path}")
-
-        # Forward the decrypted HTTP request to the real server.
-        tls_upstream.sendall(request)
-
-        # Relay the server response back to the client.
-        response = recv_response(tls_upstream)
-
-        print(f"Received {len(response)} response bytes from upstream")
-
-        tls_client.sendall(response)
+        relay(client, upstream)
 
     finally:
         upstream.close()
