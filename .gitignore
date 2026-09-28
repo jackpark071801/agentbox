@@ -28,3 +28,7 @@ __pycache__/
 11-application-proxy/certs/*.key
 11-application-proxy/certs/*.csr
 11-application-proxy/certs/*.srl
+
+# eBPF experiment build artifacts
+12-ebpf-basics/hello.bpf.o
+12-ebpf-basics/loader
