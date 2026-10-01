@@ -32,3 +32,6 @@ __pycache__/
 # eBPF experiment build artifacts
 12-ebpf-basics/hello.bpf.o
 12-ebpf-basics/loader
+12-ebpf-basics/lsm_connect.bpf.o
+12-ebpf-basics/lsm_connect.skel.h
+12-ebpf-basics/lsm_loader
